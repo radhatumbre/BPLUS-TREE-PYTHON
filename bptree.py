@@ -69,8 +69,18 @@ class BPlusTreeGUI:
         self.entry.pack()
         self.button = tk.Button(self.master, text="Insert", command=self.insert)
         self.button.pack()
-        self.canvas = tk.Canvas(self.master, width=1200, height=800)  # increase canvas dimensions
+        self.canvas = tk.Canvas(self.master, width=800, height=600)
         self.canvas.pack()
+
+    def insert(self):
+        try:
+            value = int(self.entry.get())
+            self.bptree.insert(value)
+            self.canvas.delete("all")
+            self.draw_tree(self.bptree.root, 200, 50, 50, 50, 100)
+            self.entry.delete(0, tk.END)
+        except ValueError:
+            pass
 
     def draw_tree(self, node, x, y, dx, dy, spacing):
         if node.leaf:
@@ -79,7 +89,7 @@ class BPlusTreeGUI:
             self.draw_non_leaf_node(node, x, y, dx, dy, spacing)
 
     def draw_leaf_node(self, node, x, y, dx, dy):
-        text_size = 10  # reduce font size
+        text_size = 12
         keys = node.keys
         num_keys = len(keys)
 
@@ -94,10 +104,10 @@ class BPlusTreeGUI:
         for key in keys:
             text = str(key)
             self.canvas.create_text(first_x + dx // 2, first_y + dy // 2, text=text, font=("Arial", text_size))
-            first_x += dx + 10  # increase distance between keys
+            first_x += dx
 
     def draw_non_leaf_node(self, node, x, y, dx, dy, spacing):
-        text_size = 10  # reduce font size
+        text_size = 12
         keys = node.keys
         num_children = len(node.children)
 
@@ -117,7 +127,8 @@ class BPlusTreeGUI:
         for child in node.children:
             self.draw_tree(child, child_x, y, dx, dy, spacing)
             self.canvas.create_line(x+200, y - dy // 2, child_x+200, y + dy // 2)
-            child_x += spacing + 20  # increase distance between children
+            child_x += spacing
+
 
 
 if __name__ == "__main__":
